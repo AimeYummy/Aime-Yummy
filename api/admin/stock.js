@@ -1,5 +1,5 @@
 import { supabase } from '../../lib/supabase.js'
-import { requireAdmin } from '../_shared.js'
+import { requireAdmin } from '../../lib/server/_shared.js'
 const num=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d
 export default async function handler(req,res){if(!await requireAdmin(req,res))return;try{
  if(req.method==='GET'){

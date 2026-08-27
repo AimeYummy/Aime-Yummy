@@ -1,5 +1,5 @@
 import { supabase } from '../../lib/supabase.js'
-import { requireAdmin } from '../_shared.js'
+import { requireAdmin } from '../../lib/server/_shared.js'
 export default async function handler(req,res){if(!await requireAdmin(req,res))return;try{
  if(req.method==='GET'){
   const [{data:tables,error:te},{data:orders,error:oe}]=await Promise.all([supabase.from('tables').select('*').eq('is_active',true).order('name'),supabase.from('orders').select('order_id,table_id,total,items,payment_status,status')]);if(te)throw te;if(oe)throw oe

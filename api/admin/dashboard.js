@@ -1,5 +1,5 @@
 import { supabase } from '../../lib/supabase.js'
-import { requireAdmin } from '../_shared.js'
+import { requireAdmin } from '../../lib/server/_shared.js'
 const num=v=>Number.isFinite(Number(v))?Number(v):0
 const paid=s=>['paid','processing','completed'].includes(String(s||'').toLowerCase())
 const qty=items=>(items||[]).reduce((a,x)=>a+num(x.qty??x.quantity),0)
