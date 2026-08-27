@@ -1,0 +1,2 @@
+import React from 'react';import {Navigate} from 'react-router-dom';import AdminLayout from '../../components/AdminLayout';import {useAdminAuth} from '../../context/AdminAuthContext'
+export default function AdminPageShell({title,subtitle,children}){const{isAdmin,loading}=useAdminAuth();if(loading)return <div className='admin-loading'>Memuat sesi admin...</div>;if(!isAdmin)return <Navigate to='/admin/login' replace/>;return <AdminLayout title={title} subtitle={subtitle}>{children}</AdminLayout>}

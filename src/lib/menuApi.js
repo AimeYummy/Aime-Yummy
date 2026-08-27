@@ -1,0 +1,10 @@
+import { MENU_PLACEHOLDER_IMAGE } from '../data/menuItems'
+async function parse(r){const d=await r.json().catch(()=>null);if(!r.ok){const e=new Error(d?.message||'Terjadi kesalahan.');e.status=r.status;throw e}return d}
+async function headers(){const {supabaseBrowser}=await import('./supabaseClient');const {data}=await supabaseBrowser?.auth.getSession();const token=data?.session?.access_token;return {'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})}}
+const api=(url,opt={})=>fetch(url,opt).then(parse)
+function normalize(r){if(!r)return null;const stock=Math.max(0,Number(r.stock||0));return {...r,id:String(r.id),name:r.name||'',category:r.category||'Makanan',price:Number(r.price||0),hpp:Number(r.hpp||0),stock,pcsPerMika:Number(r.pcsPerMika||r.pcs_per_mika||1),description:r.description||'',badge:r.badge||'',imageUrl:r.imageUrl||r.image_url||MENU_PLACEHOLDER_IMAGE,available:r.available!==false&&r.inStock!==false&&stock>0,inStock:stock>0,hasVariant:Boolean(r.hasVariant??r.has_variant),variants:Array.isArray(r.variants)?r.variants.map(v=>({label:v.label||v.name,price:Number(v.price||v.additional_price||0)})):[],sortOrder:Number(r.sortOrder??r.sort_order??0)}}
+export async function fetchMenuItems(){const d=await api('/api/menu-list');return {items:(d?.items||[]).map(normalize).filter(Boolean),source:'supabase'}}
+export async function createMenuItem(payload){const d=await api('/api/menu-create',{method:'POST',headers:await headers(),body:JSON.stringify(payload)});return normalize(d.item)}
+export async function updateMenuItem(id,payload){const d=await api('/api/menu-update',{method:'PATCH',headers:await headers(),body:JSON.stringify({...payload,id})});return normalize(d.item)}
+export async function deleteMenuItem(id){return api('/api/menu-delete',{method:'DELETE',headers:await headers(),body:JSON.stringify({id})})}
+export function fileToBase64(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(new Error('Gagal membaca file gambar'));r.readAsDataURL(file)})}
