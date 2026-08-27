@@ -1,5 +1,5 @@
-import { updateMenuItem, uploadMenuImage } from './_menu-store.js'
-import { requireAdmin } from './_shared.js'
+import { updateMenuItem, uploadMenuImage } from '../lib/server/_menu-store.js'
+import { requireAdmin } from '../lib/server/_shared.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'PATCH' && req.method !== 'PUT') {

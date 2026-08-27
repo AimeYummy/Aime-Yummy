@@ -1,5 +1,5 @@
-import { deleteMenuItem } from './_menu-store.js'
-import { requireAdmin } from './_shared.js'
+import { deleteMenuItem } from '../lib/server/_menu-store.js'
+import { requireAdmin } from '../lib/server/_shared.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'DELETE' && req.method !== 'POST') {

@@ -1,5 +1,5 @@
-import { getOrder } from './_store.js'
-import { getMethodLabel, getStatusLabel, formatOrderTime } from './_shared.js'
+import { getOrder } from '../lib/server/_store.js'
+import { getMethodLabel, getStatusLabel, formatOrderTime } from '../lib/server/_shared.js'
 
 export default async function handler(req, res) {
   const orderId = String(req.query.orderId || '').trim()

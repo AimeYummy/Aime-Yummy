@@ -1,5 +1,5 @@
-import { attachTelegramMessageId, createOrderRecord } from './_store.js'
-import { buildOwnerMessage, ensureTelegramWebhook, formatOrderTime, getMethodLabel, getOrderItemsCount, getStatusLabel } from './_shared.js'
+import { attachTelegramMessageId, createOrderRecord } from '../lib/server/_store.js'
+import { buildOwnerMessage, ensureTelegramWebhook, formatOrderTime, getMethodLabel, getOrderItemsCount, getStatusLabel } from '../lib/server/_shared.js'
 
 async function sendTelegramMessage(order) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN
