@@ -142,7 +142,7 @@ export default function PaymentPage() {
     if (!supabaseBrowser || !order?.orderId) return
 
     const channel = supabaseBrowser
-      .channel(`orders:${order.orderId}`)
+      .channel(`orders:${order.orderId}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`)
       .on(
         'postgres_changes',
         {
