@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 
 const STORAGE_KEY = 'aime_dimsum_order_draft_v2'
 const METHOD_KEY = 'aime_dimsum_preferred_method_v2'
+const TABLE_KEY = 'aime_yummy_active_table_v1'
 
 const OrderDraftContext = createContext(null)
 
@@ -31,6 +32,7 @@ export function OrderDraftProvider({ children }) {
     email: '',
     note: '',
   }))
+  const [table, setTable] = useState(() => readJson(TABLE_KEY, null))
   const [preferredMethod, setPreferredMethod] = useState(() => {
     if (typeof window === 'undefined') return 'QRIS'
     return window.localStorage.getItem(METHOD_KEY) || 'QRIS'
@@ -45,12 +47,16 @@ export function OrderDraftProvider({ children }) {
     window.localStorage.setItem(METHOD_KEY, preferredMethod)
   }, [preferredMethod])
 
+  useEffect(() => { writeJson(TABLE_KEY, table) }, [table])
+
   const value = useMemo(() => ({
     customer,
     setCustomer,
     preferredMethod,
     setPreferredMethod,
-  }), [customer, preferredMethod])
+    table,
+    setTable,
+  }), [customer, preferredMethod, table])
 
   return <OrderDraftContext.Provider value={value}>{children}</OrderDraftContext.Provider>
 }
