@@ -11,7 +11,7 @@ async function request(url,opt={}){
   let payload=null
   try{payload=raw?JSON.parse(raw):null}catch{payload=null}
   if(!response.ok) throw new Error(payload?.message||`Request gagal (${response.status})`)
-  if(!payload||typeof payload!=='object') throw new Error('Server mengembalikan respons yang tidak valid. Periksa routing API Vercel.')
+  if(!payload||typeof payload!=='object') { const type=response.headers.get('content-type')||''; const preview=raw.replace(/\s+/g,' ').slice(0,180); throw new Error(`Server mengembalikan respons yang tidak valid (${response.status}, ${type||'unknown content-type'}). ${preview||'Respons kosong.'}`) }
   return payload
 }
 export const getDashboard=()=>request('/api/admin/dashboard')
