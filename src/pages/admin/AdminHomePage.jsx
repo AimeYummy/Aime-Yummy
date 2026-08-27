@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import AdminPageShell from './AdminPageShell'
 import AdminIcon from '../../components/AdminIcon'
 import { getDashboard } from '../../lib/adminApi'
+import { useLiveRefresh } from '../../lib/liveRefresh'
 
 const rupiah = n => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Number(n || 0))
 const fmt = v => v ? new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(v)) : '-'
@@ -15,6 +16,7 @@ const cards = [
   ['Bulan Ini', v => rupiah(v?.revenue?.month), 'performance', 'blue'],
   ['Persentase Terjual', v => `${v?.stock?.soldPercent ?? 0}%`, 'performance', 'rose'],
   ['Total Transaksi', v => v?.transactions ?? 0, 'menu', 'slate'],
+  ['Transaksi Hari Ini', v => v?.transactionsToday ?? 0, 'sales', 'indigo'],
 ]
 const tint = { indigo: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300', emerald: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300', amber: 'bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300', violet: 'bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-300', cyan: 'bg-cyan-100 text-cyan-600 dark:bg-cyan-500/15 dark:text-cyan-300', blue: 'bg-blue-100 text-blue-600 dark:bg-blue-500/15 dark:text-blue-300', rose: 'bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:text-rose-300', slate: 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300' }
 
@@ -28,11 +30,12 @@ export default function AdminHomePage() {
     finally { setLoading(false) }
   }
   useEffect(() => { load() }, [])
+  useLiveRefresh(load, ['orders','menu_items','stock_movements'], 5000)
 
   return <AdminPageShell title="Dashboard" subtitle="Pantau stok, pendapatan, transaksi, dan aktivitas terbaru dalam satu tempat.">
     {error ? <div className="mb-5 flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50/80 px-4 py-3 text-sm font-semibold text-rose-700 dark:border-rose-400/15 dark:bg-rose-500/10 dark:text-rose-300"><AdminIcon name="alert" size={18} className="mt-0.5 shrink-0"/><span>{error}</span></div> : null}
 
-    <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8">
+    <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9">
       {cards.map(([label, value, icon, color]) => <div key={label} className="rounded-[26px] border border-white/70 bg-white/65 p-4 shadow-sm backdrop-blur-xl transition hover:-translate-y-1 dark:border-white/10 dark:bg-white/5">
         <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-2xl ${tint[color]}`}><AdminIcon name={icon === 'package' ? 'stock' : icon} size={18}/></div>
         <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500">{label}</p>
