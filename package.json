@@ -24,7 +24,5 @@
   "engines": {
     "node": "22.x"
   },
-  "allowScripts": {
-    "esbuild": true
-  }
+  "packageManager": "npm@10.9.3"
 }

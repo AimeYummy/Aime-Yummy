@@ -1,15 +1,21 @@
 # Vercel Deployment
 
-## Project Settings
+## Important
+This package is intentionally flattened so `package.json` and `vercel.json` are at the project root. Do not set a nested Root Directory.
+
+### Vercel settings
 - Framework Preset: Vite
 - Build Command: `npm run build`
 - Output Directory: `dist`
-- Root Directory: `StoreFlow-AIME` when this repository contains the folder as a subdirectory.
+- Install Command: `npm install`
 - Node.js: 22.x
 
-## Important
-This project intentionally does not use the legacy `builds` property in `vercel.json`.
-If Vercel reports `Due to builds existing in your configuration file`, the deployment is reading a different/older `vercel.json` or the Vercel Root Directory points at a different folder.
+### Why this version is different
+- No `builds` property exists anywhere in the project.
+- npm is pinned through `packageManager` to npm 10.9.3, avoiding npm 11's install-script review warning.
+- `allowScripts` and `.npmrc` overrides were removed because they are not needed with npm 10.
+- Vite chunk warning threshold is 1000 KB.
+- API functions remain under `/api`.
 
-## npm install scripts
-`esbuild` is explicitly approved because Vite requires its install-time binary setup.
+### If the Vercel log still says `builds` exists
+That message is coming from a different `vercel.json` than this project. Check Vercel Project Settings > General > Root Directory and make sure it points to the directory containing this `vercel.json`, or use this flattened package as the repository root. Then redeploy with cache disabled.
