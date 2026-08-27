@@ -39,33 +39,59 @@ const adminRoutes = {
 }
 
 function getParts(req) {
-  const raw = req.query?.path
-  if (Array.isArray(raw)) return raw.map(String).filter(Boolean)
-  return String(raw || '').split('/').filter(Boolean)
+  const fromQuery = req.query?.path
+  if (Array.isArray(fromQuery) && fromQuery.length) {
+    return fromQuery.map(String).filter(Boolean)
+  }
+  if (typeof fromQuery === 'string' && fromQuery.trim()) {
+    return fromQuery.split('/').filter(Boolean)
+  }
+  const pathname = String(req.url || '').split('?')[0]
+  return pathname
+    .replace(/^\/api\/?/, '')
+    .split('/')
+    .map((part) => {
+      try { return decodeURIComponent(part) } catch { return part }
+    })
+    .filter(Boolean)
+}
+
+function jsonError(res, status, message) {
+  return res.status(status).json({ message: String(message || 'Internal server error') })
 }
 
 export default async function handler(req, res) {
-  const parts = getParts(req)
-  const first = parts[0]
+  try {
+    const parts = getParts(req)
+    const first = parts[0]
 
-  if (first === 'admin') {
-    const resource = parts[1]
-    const target = adminRoutes[resource]
-    if (!target) return res.status(404).json({ message: 'Admin endpoint not found' })
-    return target(req, res)
+    if (!first) {
+      return res.status(200).json({ ok: true, service: 'StoreFlow API', version: '2.0.0' })
+    }
+
+    if (first === 'admin') {
+      const resource = parts[1]
+      const target = adminRoutes[resource]
+      if (!target) return jsonError(res, 404, 'Admin endpoint not found')
+      return await target(req, res)
+    }
+
+    if (first === 'orders') {
+      const orderId = parts[1]
+      const action = parts[2]
+      req.query = { ...(req.query || {}), orderId }
+      if (action === 'confirm') return await orderConfirm(req, res)
+      if (action === 'fail') return await orderFail(req, res)
+      if (action === 'status') return await orderStatus(req, res)
+      return jsonError(res, 404, 'Order endpoint not found')
+    }
+
+    const target = routes[first]
+    if (!target) return jsonError(res, 404, 'API endpoint not found')
+    return await target(req, res)
+  } catch (error) {
+    console.error('[API ROUTER] UNHANDLED ERROR', error)
+    if (res.headersSent) return
+    return jsonError(res, 500, error?.message || 'Internal server error')
   }
-
-  if (first === 'orders') {
-    const orderId = parts[1]
-    const action = parts[2]
-    req.query = { ...req.query, orderId }
-    if (action === 'confirm') return orderConfirm(req, res)
-    if (action === 'fail') return orderFail(req, res)
-    if (action === 'status') return orderStatus(req, res)
-    return res.status(404).json({ message: 'Order endpoint not found' })
-  }
-
-  const target = routes[first]
-  if (!target) return res.status(404).json({ message: 'API endpoint not found' })
-  return target(req, res)
 }
