@@ -9,7 +9,6 @@ const links = [
   ['/admin/stock', 'Stok', 'stock'],
   ['/admin/tables', 'Meja', 'table'],
   ['/admin/sales', 'Penjualan', 'sales'],
-  ['/admin/performance', 'Performa', 'performance'],
   ['/admin/export', 'Ekspor & Cetak', 'export'],
 ]
 
