@@ -25,7 +25,7 @@ export default function AdminHomePage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const load = async () => {
-    try { setError(''); setLoading(true); setData(await getDashboard()) }
+    try { setError(''); setLoading(true); setData((await getDashboard()) || {stock:{available:0,sold:0,remaining:0,soldPercent:0},revenue:{all:0,today:0,month:0},transactions:0,transactionsToday:0,latest:[]}) }
     catch (e) { setError(e?.message || 'Gagal memuat dashboard.') }
     finally { setLoading(false) }
   }

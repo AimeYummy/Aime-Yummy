@@ -16,7 +16,7 @@ const image64=file=>new Promise((resolve,reject)=>{if(!file)return resolve(null)
 
 export default function AdminMenuPage(){
  const{id}=useParams();const{refresh:refreshCustomer}=useMenu();const[items,setItems]=useState([]);const[editing,setEditing]=useState(null);const[form,setForm]=useState({...initial,variants:[]});const[error,setError]=useState('');const[notice,setNotice]=useState('');const[busy,setBusy]=useState(false)
- const load=async()=>{try{setError('');const d=await getMenuAdmin();setItems(d.items||[])}catch(e){setError(e.message||'Gagal memuat menu.')}}
+ const load=async()=>{try{setError('');const d=await getMenuAdmin();setItems(d?.items||[])}catch(e){setError(e.message||'Gagal memuat menu.')}}
  useEffect(()=>{load()},[]);useLiveRefresh(load,['menu_items'],5000)
  useEffect(()=>{if(id&&items.length){const found=items.find(x=>String(x.id)===String(id));if(found&&!editing)edit(found)}},[id,items])
  const set=(k,v)=>setForm(p=>({...p,[k]:v}))
