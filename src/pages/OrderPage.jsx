@@ -34,7 +34,7 @@ export default function OrderPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const { cart, updateQty, addItem } = useCart()
-  const { customer, setCustomer, preferredMethod, setPreferredMethod } = useOrderDraft()
+  const { customer, setCustomer, preferredMethod, setPreferredMethod, table } = useOrderDraft()
   const { items: menuItems, loading: menuLoading } = useMenu()
   const [error, setError] = useState('')
 
@@ -93,6 +93,13 @@ export default function OrderPage() {
             <p className="hero-text">Edit jumlah item dibawah ini, atau masih kurang?? Klik +Add order for btambah menu</p>
           </div>
         </motion.section>
+
+        {table?.name ? (
+          <div className="glass-card order-table-banner" role="status">
+            <strong>Meja {String(table.name).replace(/^mejaa/i, '')}</strong>
+            <span>Pesanan ini otomatis terhubung ke meja dari QR. Nomor meja tidak dapat diedit.</span>
+          </div>
+        ) : null}
 
         <div className="order-content-grid">
           <div className="order-main-column">

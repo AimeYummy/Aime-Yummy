@@ -25,7 +25,7 @@ export default function PaymentPage() {
   const location = useLocation()
   const navigate = useNavigate()
   const { cart, clearCart } = useCart()
-  const { customer, preferredMethod, setPreferredMethod } = useOrderDraft()
+  const { customer, preferredMethod, setPreferredMethod, table } = useOrderDraft()
 
   const initialOrder = useMemo(() => {
     const stateOrder = location.state?.order || readLastOrder()
@@ -240,6 +240,7 @@ export default function PaymentPage() {
         subtotal,
         total: subtotal,
         paymentMethod: selectedMethod,
+        tableId: table?.id || null,
       }
 
       const created = await createOrder(payload)
@@ -284,7 +285,14 @@ export default function PaymentPage() {
     navigate(`/success/${method}/${payload.orderId}`, { replace: true, state: { order: payload } })
   }
 
-  const goFailed = (payload) => {
+  const goFailed = async (payload) => {
+    try {
+      const response = await fetch(`/api/orders/${encodeURIComponent(payload.orderId)}/fail`, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+      const failed = await response.json().catch(() => null)
+      if (failed?.orderId) payload = normalizeOrder(failed, payload)
+    } catch {
+      // Keep the local failure screen even if release confirmation cannot be reached.
+    }
     navigate(`/payment-failed/${payload.orderId}`, { replace: true, state: { order: payload } })
   }
 
@@ -310,7 +318,7 @@ export default function PaymentPage() {
         const nextAttempts = checkAttempts + 1
         setCheckAttempts(nextAttempts)
         if (nextAttempts >= 3) {
-          goFailed(normalized)
+          await goFailed(normalized)
         }
       }
     } catch (err) {
