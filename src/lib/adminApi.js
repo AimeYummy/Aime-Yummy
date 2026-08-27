@@ -9,5 +9,4 @@ export const saveTable=p=>request('/api/admin/tables',{method:p.id?'PATCH':'POST
 export const deleteTable=id=>request(`/api/admin/tables?id=${encodeURIComponent(id)}`,{method:'DELETE'})
 export const getSales=q=>request(`/api/admin/sales${q||''}`)
 export const updateOrderStatus=p=>request('/api/admin/orders',{method:'PATCH',body:JSON.stringify(p)})
-export const getPerformance=q=>request(`/api/admin/performance${q||''}`)
 export const createManualSale=p=>request('/api/admin/orders',{method:'POST',body:JSON.stringify(p)})
