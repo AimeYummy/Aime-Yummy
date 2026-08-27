@@ -2,17 +2,15 @@
 -- Run after the existing AIME menu/order migrations.
 
 alter table if exists public.menu_items
-  add column if not exists hpp numeric not null default 0,
   add column if not exists stock integer not null default 0,
   add column if not exists pcs_per_mika integer not null default 1,
   add column if not exists in_stock boolean not null default false,
   add column if not exists available boolean not null default true;
 
 update public.menu_items
-set stock = coalesce(stock, 0),
+set stock = greatest(coalesce(stock, 0), 0),
     pcs_per_mika = greatest(coalesce(pcs_per_mika, 1), 1),
-    in_stock = (coalesce(stock, 0) > 0),
-    available = (coalesce(available, true) and coalesce(stock, 0) > 0);
+    in_stock = (coalesce(stock, 0) > 0);
 
 create table if not exists public.stock_movements (
   id uuid primary key default gen_random_uuid(),
