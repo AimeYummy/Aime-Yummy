@@ -1,11 +1,10 @@
 import dashboard from '../../lib/server/admin/dashboard.js'
 import menu from '../../lib/server/admin/menu.js'
 import orders from '../../lib/server/admin/orders.js'
-import performance from '../../lib/server/admin/performance.js'
 import tables from '../../lib/server/admin/tables.js'
 import sales from '../../lib/server/admin/sales.js'
 
-const handlers = { dashboard, menu, orders, performance, tables, sales }
+const handlers = { dashboard, menu, orders, tables, sales }
 
 export default async function handler(req, res) {
   const raw = req.query?.path
