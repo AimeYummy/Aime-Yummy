@@ -4705,3 +4705,5 @@ body, .app-shell, .app-shell-menu {
     font-size: .84rem;
   }
 }
+
+.order-table-banner{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;margin:0 0 14px;border:1px solid rgba(79,70,229,.16)}.order-table-banner strong{font-weight:900;color:#312e81}.order-table-banner span{font-size:.82rem;color:#64748b}@media(max-width:640px){.order-table-banner{flex-direction:column;align-items:flex-start}}
