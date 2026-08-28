@@ -4,9 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { categories } from '../data/siteConfig'
 import { useCart } from '../context/CartContext'
 import { useMenu } from '../context/MenuContext'
-import { useAdminAuth } from '../context/AdminAuthContext'
 import MenuCard from './MenuCard'
-import AddMenuCard from './AddMenuCard'
 import { MENU_PLACEHOLDER_IMAGE } from '../data/menuItems'
 
 function uniqCategoryList(items) {
@@ -46,7 +44,6 @@ export default function MenuSection({ cartBarRef }) {
   const [flyers, setFlyers] = useState([])
   const { cart, addItem, removeItem } = useCart()
   const { items, loading } = useMenu()
-  const { isAdmin } = useAdminAuth()
   const tabRefs = useRef(new Map())
   const flyerTimers = useRef(new Set())
 
@@ -240,12 +237,9 @@ export default function MenuSection({ cartBarRef }) {
             />
           ))}
 
-          {isAdmin ? (
-            <AddMenuCard index={filtered.length} onClick={() => navigate('/admin/menu/new')} />
-          ) : null}
         </div>
 
-        {!loading && !filtered.length && !isAdmin ? (
+        {!loading && !filtered.length ? (
           <p className="section-copy menu-empty-state">Menu belum tersedia saat ini. Silakan cek kembali sebentar lagi.</p>
         ) : null}
       </div>
