@@ -16,13 +16,12 @@ export function useLiveRefresh(refresh, tables = [], intervalMs = 5000) {
   useEffect(() => {
     let disposed = false
     const channels = []
-    const uniqueTables = [...new Set(tables.filter(Boolean))]
     const timer = window.setInterval(() => {
       if (!disposed) fnRef.current?.()
     }, intervalMs)
 
     if (supabaseBrowser) {
-      for (const table of uniqueTables) {
+      for (const table of tables) {
         const channel = supabaseBrowser
           .channel(makeChannelName(table))
           .on(
