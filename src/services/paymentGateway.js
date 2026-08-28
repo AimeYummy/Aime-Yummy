@@ -1,5 +1,6 @@
+import { apiUrl } from '../lib/apiUrl'
 export async function createQris(payload) {
-  const response = await fetch('/api/create-qris', {
+  const response = await fetch(apiUrl('create-qris'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -21,7 +22,7 @@ export async function createQris(payload) {
 export const createQRIS = createQris
 
 export async function createOrder(payload) {
-  const response = await fetch('/api/create-order', {
+  const response = await fetch(apiUrl('create-order'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -37,7 +38,7 @@ export async function createOrder(payload) {
 }
 
 export async function getOrderStatus(orderId) {
-  const response = await fetch(`/api/orders/${encodeURIComponent(orderId)}/status`)
+  const response = await fetch(apiUrl(`orders/${encodeURIComponent(orderId)}/status`))
   const data = await response.json().catch(() => ({}))
 
   if (!response.ok) {
@@ -48,7 +49,7 @@ export async function getOrderStatus(orderId) {
 }
 
 export async function checkPayment(orderId) {
-  const response = await fetch(`/api/check-payment?orderId=${encodeURIComponent(orderId)}`)
+  const response = await fetch(apiUrl('check-payment', `orderId=${encodeURIComponent(orderId)}`))
   const data = await response.json().catch(() => ({}))
 
   if (!response.ok) {
