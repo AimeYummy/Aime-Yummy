@@ -1,3 +1,4 @@
+import { apiUrl } from '../lib/apiUrl'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useOrderDraft } from '../context/OrderDraftContext'
@@ -12,7 +13,7 @@ export default function TableLandingPage() {
     let cancelled=false
     ;(async()=>{
       try {
-        const r=await fetch(`/api/table-lookup?name=${encodeURIComponent(tableSlug||'')}`)
+        const r=await fetch(apiUrl('table-lookup', `name=${encodeURIComponent(tableSlug||'')}`))
         const d=await r.json().catch(()=>null)
         if(!r.ok) throw new Error(d?.message||'Meja tidak ditemukan.')
         if(cancelled)return

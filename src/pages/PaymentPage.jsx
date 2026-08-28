@@ -1,3 +1,4 @@
+import { apiUrl } from '../lib/apiUrl'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import CustomerDetailsCard from '../components/CustomerDetailsCard'
@@ -287,7 +288,7 @@ export default function PaymentPage() {
 
   const goFailed = async (payload) => {
     try {
-      const response = await fetch(`/api/orders/${encodeURIComponent(payload.orderId)}/fail`, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+      const response = await fetch(apiUrl(`orders/${encodeURIComponent(payload.orderId)}/fail`), { method: 'POST', headers: { 'Content-Type': 'application/json' } })
       const failed = await response.json().catch(() => null)
       if (failed?.orderId) payload = normalizeOrder(failed, payload)
     } catch {
