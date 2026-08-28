@@ -39,59 +39,45 @@ const adminRoutes = {
 }
 
 function getParts(req) {
-  const fromQuery = req.query?.path
-  if (Array.isArray(fromQuery) && fromQuery.length) {
-    return fromQuery.map(String).filter(Boolean)
-  }
-  if (typeof fromQuery === 'string' && fromQuery.trim()) {
-    return fromQuery.split('/').filter(Boolean)
-  }
+  const raw = req.query?.path
+  if (Array.isArray(raw)) return raw.map((part) => decodeURIComponent(String(part))).filter(Boolean)
+  if (raw) return String(raw).split('/').map((part) => decodeURIComponent(part)).filter(Boolean)
+
+  // Defensive fallback for runtimes that do not populate req.query.path for
+  // a catch-all function. Vercel still provides req.url.
   const pathname = String(req.url || '').split('?')[0]
   return pathname
-    .replace(/^\/api\/?/, '')
+    .replace(/^\/api(?:\/|$)/, '')
     .split('/')
-    .map((part) => {
-      try { return decodeURIComponent(part) } catch { return part }
-    })
+    .map((part) => decodeURIComponent(part))
     .filter(Boolean)
 }
 
-function jsonError(res, status, message) {
-  return res.status(status).json({ message: String(message || 'Internal server error') })
-}
-
 export default async function handler(req, res) {
-  try {
-    const parts = getParts(req)
-    const first = parts[0]
+  // Keep the one-function architecture (important for Vercel Hobby) while
+  // returning deterministic JSON for every unknown API path.
+  res.setHeader?.('Content-Type', 'application/json; charset=utf-8')
+  const parts = getParts(req)
+  const first = parts[0]
 
-    if (!first) {
-      return res.status(200).json({ ok: true, service: 'StoreFlow API', version: '2.0.0' })
-    }
-
-    if (first === 'admin') {
-      const resource = parts[1]
-      const target = adminRoutes[resource]
-      if (!target) return jsonError(res, 404, 'Admin endpoint not found')
-      return await target(req, res)
-    }
-
-    if (first === 'orders') {
-      const orderId = parts[1]
-      const action = parts[2]
-      req.query = { ...(req.query || {}), orderId }
-      if (action === 'confirm') return await orderConfirm(req, res)
-      if (action === 'fail') return await orderFail(req, res)
-      if (action === 'status') return await orderStatus(req, res)
-      return jsonError(res, 404, 'Order endpoint not found')
-    }
-
-    const target = routes[first]
-    if (!target) return jsonError(res, 404, 'API endpoint not found')
-    return await target(req, res)
-  } catch (error) {
-    console.error('[API ROUTER] UNHANDLED ERROR', error)
-    if (res.headersSent) return
-    return jsonError(res, 500, error?.message || 'Internal server error')
+  if (first === 'admin') {
+    const resource = parts[1]
+    const target = adminRoutes[resource]
+    if (!target) return res.status(404).json({ message: 'Admin endpoint not found' })
+    return target(req, res)
   }
+
+  if (first === 'orders') {
+    const orderId = parts[1]
+    const action = parts[2]
+    req.query = { ...req.query, orderId }
+    if (action === 'confirm') return orderConfirm(req, res)
+    if (action === 'fail') return orderFail(req, res)
+    if (action === 'status') return orderStatus(req, res)
+    return res.status(404).json({ message: 'Order endpoint not found' })
+  }
+
+  const target = routes[first]
+  if (!target) return res.status(404).json({ message: 'API endpoint not found' })
+  return target(req, res)
 }
