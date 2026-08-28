@@ -12,7 +12,34 @@ const initial={name:'',category:'Makanan',price:'',badge:'',description:'',avail
 const input='w-full rounded-2xl border border-white/70 bg-white/70 px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:border-indigo-400/40 dark:focus:ring-indigo-500/10'
 const label='mb-2 block text-xs font-black uppercase tracking-wide text-slate-500 dark:text-slate-400'
 const money=n=>`Rp ${Number(n||0).toLocaleString('id-ID')}`
-const image64=file=>new Promise((resolve,reject)=>{if(!file)return resolve(null);const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(new Error('Gagal membaca gambar.'));r.readAsDataURL(file)})
+const image64=file=>new Promise((resolve,reject)=>{
+ if(!file)return resolve(null)
+ if(!file.type.startsWith('image/'))return reject(new Error('File gambar tidak valid.'))
+ const reader=new FileReader()
+ reader.onerror=()=>reject(new Error('Gagal membaca gambar.'))
+ reader.onload=()=>{
+  const src=String(reader.result||'')
+  const image=new Image()
+  image.onerror=()=>reject(new Error('Gagal memproses gambar.'))
+  image.onload=()=>{
+   const maxSize=1600
+   const scale=Math.min(1,maxSize/Math.max(image.width||1,image.height||1))
+   const width=Math.max(1,Math.round((image.width||1)*scale))
+   const height=Math.max(1,Math.round((image.height||1)*scale))
+   const canvas=document.createElement('canvas')
+   canvas.width=width;canvas.height=height
+   const ctx=canvas.getContext('2d')
+   if(!ctx)return reject(new Error('Browser tidak mendukung pemrosesan gambar.'))
+   ctx.drawImage(image,0,0,width,height)
+   const compressed=canvas.toDataURL('image/webp',0.82)
+   // Keep payload safely below typical serverless request limits.
+   if(compressed.length>1800000)return reject(new Error('Ukuran gambar masih terlalu besar. Pilih gambar yang lebih kecil.'))
+   resolve(compressed)
+  }
+  image.src=src
+ }
+ reader.readAsDataURL(file)
+})
 
 export default function AdminMenuPage(){
  const{id}=useParams();const{refresh:refreshCustomer}=useMenu();const[items,setItems]=useState([]);const[editing,setEditing]=useState(null);const[form,setForm]=useState({...initial,variants:[]});const[error,setError]=useState('');const[notice,setNotice]=useState('');const[busy,setBusy]=useState(false)
