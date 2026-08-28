@@ -6,7 +6,7 @@ import path from 'node:path'
 /**
  * Dev-only middleware that lets `npm run dev` (plain Vite) serve the same
  * `/api/*` endpoints that run as a single Vercel serverless function in
- * production (api/[...path].js). Without this, any fetch('/api/...') during
+ * production (api/index.js). Without this, any fetch('/api/...') during
  * local development falls through to Vite's SPA fallback and returns this
  * project's index.html with a 200 status — which is exactly the
  * "Server mengembalikan respons yang tidak valid (200, text/html)" error.
@@ -27,7 +27,7 @@ function localApiDevMiddleware(env) {
       Object.assign(process.env, env)
 
       const apiHandlerUrl = pathToFileURL(
-        path.resolve(import.meta.dirname, 'api/[...path].js')
+        path.resolve(import.meta.dirname, 'api/index.js')
       ).href
 
       server.middlewares.use('/api', async (req, res) => {
