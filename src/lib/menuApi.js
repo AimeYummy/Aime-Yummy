@@ -37,7 +37,7 @@ function normalize(r) {
     description: r.description || '',
     badge: r.badge || '',
     imageUrl: r.imageUrl || r.image_url || MENU_PLACEHOLDER_IMAGE,
-    available: r.available !== false && r.inStock !== false && stock > 0,
+    available: r.available !== false,
     inStock: stock > 0,
     hasVariant: Boolean(r.hasVariant ?? r.has_variant),
     variants: Array.isArray(r.variants) ? r.variants.map(v => ({ label: v.label || v.name, price: Number(v.price || v.additional_price || 0) })) : [],
