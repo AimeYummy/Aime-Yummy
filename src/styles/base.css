@@ -4707,3 +4707,5 @@ body, .app-shell, .app-shell-menu {
 }
 
 .order-table-banner{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;margin:0 0 14px;border:1px solid rgba(79,70,229,.16)}.order-table-banner strong{font-weight:900;color:#312e81}.order-table-banner span{font-size:.82rem;color:#64748b}@media(max-width:640px){.order-table-banner{flex-direction:column;align-items:flex-start}}
+
+.table-selection-lock{display:grid;gap:3px;padding:12px 14px;border:1px solid rgba(123,24,36,.18);border-radius:14px;background:rgba(123,24,36,.06);color:#7B1824}.table-selection-lock strong{font-size:.9rem}.table-selection-lock small{font-size:.72rem;color:#64748b}.field-error-text{display:block;margin-top:5px;color:#be123c;font-size:.72rem;font-weight:700}
