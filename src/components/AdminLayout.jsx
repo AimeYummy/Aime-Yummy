@@ -35,16 +35,16 @@ export default function AdminLayout({ children, title, subtitle = '' }) {
     nav('/')
   }
 
-  const navLink = ({ isActive }) => `group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all ${isActive ? 'bg-indigo-50 text-indigo-600 shadow-sm dark:bg-indigo-500/15 dark:text-indigo-300' : 'text-slate-600 hover:bg-white/70 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white'}`
+  const navLink = ({ isActive }) => `group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all ${isActive ? 'bg-rose-50 text-rose-800 shadow-sm dark:bg-rose-500/15 dark:text-rose-200' : 'text-slate-600 hover:bg-white/70 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white'}`
 
   return (
-    <div className="font-sans min-h-screen bg-[radial-gradient(circle_at_top_right,_#fdfcfb_0%,_#e6e0f7_42%,_#eef2ff_100%)] text-slate-800 dark:bg-[radial-gradient(circle_at_top_right,_#0f172a_0%,_#17152f_48%,_#0f172a_100%)] dark:text-slate-100">
+    <div className="admin-app font-sans min-h-screen bg-[radial-gradient(circle_at_top_right,_#fffaf8_0%,_#f5e9e8_42%,_#f8f3f0_100%)] text-slate-800 dark:bg-[radial-gradient(circle_at_top_right,_#251216_0%,_#1d1518_48%,_#140f10_100%)] dark:text-slate-100">
       <div className={`fixed inset-0 z-30 bg-slate-950/40 backdrop-blur-[2px] transition-opacity lg:hidden ${sidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setSidebarOpen(false)} />
 
       <aside className={`fixed inset-y-0 left-0 z-40 m-0 flex w-[280px] flex-col overflow-hidden rounded-r-[34px] border border-white/70 bg-white/65 shadow-2xl backdrop-blur-2xl transition-transform duration-300 dark:border-white/10 dark:bg-slate-900/75 lg:inset-y-4 lg:left-4 lg:rounded-[34px] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="flex items-start justify-between border-b border-white/60 p-5 dark:border-white/10">
           <div>
-            <div className="text-xl font-black tracking-tight text-slate-900 dark:text-white">Store<span className="text-indigo-600 dark:text-indigo-400">Flow</span></div>
+            <div className="text-xl font-black tracking-tight text-slate-900 dark:text-white">Store<span className="text-rose-800 dark:text-rose-200">Flow</span></div>
             <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">Penjualan · Stok · Meja</p>
           </div>
           <button type="button" className="rounded-xl bg-slate-100 p-2 text-slate-500 transition hover:bg-slate-200 lg:hidden dark:bg-white/10 dark:text-slate-300" onClick={() => setSidebarOpen(false)} aria-label="Tutup menu">
@@ -61,7 +61,7 @@ export default function AdminLayout({ children, title, subtitle = '' }) {
           <div className="px-3 pb-2 pt-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Workspace Admin</div>
           {links.map(([to, label, icon]) => (
             <NavLink key={to} to={to} end={to === '/admin'} className={navLink}>
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100/80 text-slate-500 transition group-hover:bg-white group-hover:text-indigo-600 dark:bg-white/5 dark:text-slate-300 dark:group-hover:bg-white/10 dark:group-hover:text-indigo-300">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100/80 text-slate-500 transition group-hover:bg-white group-hover:text-rose-800 dark:bg-white/5 dark:text-slate-300 dark:group-hover:bg-white/10 dark:group-hover:text-rose-200">
                 <AdminIcon name={icon} size={18} />
               </span>
               {label}
@@ -88,16 +88,16 @@ export default function AdminLayout({ children, title, subtitle = '' }) {
                 <AdminIcon name="menuIcon" size={19} />
               </button>
               <div className="min-w-0">
-                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-indigo-500 dark:text-indigo-300">StoreFlow Admin</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-rose-800 dark:text-rose-200">StoreFlow Admin</p>
                 <h1 className="mt-1 truncate text-xl font-black tracking-tight text-slate-900 dark:text-white sm:text-2xl">{title}</h1>
                 {subtitle ? <p className="mt-1 hidden text-sm font-medium text-slate-500 dark:text-slate-400 sm:block">{subtitle}</p> : null}
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <button type="button" onClick={() => setDark(v => !v)} className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/70 bg-white/70 text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:text-indigo-600 dark:border-white/10 dark:bg-white/10 dark:text-slate-300" aria-label="Ubah tema">
+              <button type="button" onClick={() => setDark(v => !v)} className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/70 bg-white/70 text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:text-rose-800 dark:border-white/10 dark:bg-white/10 dark:text-slate-300" aria-label="Ubah tema">
                 <AdminIcon name={dark ? 'sun' : 'moon'} size={17} />
               </button>
-              <button type="button" onClick={() => nav('/')} className="hidden rounded-2xl border border-white/70 bg-white/70 px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:text-indigo-600 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:border-indigo-400/30 sm:flex sm:items-center sm:gap-2">
+              <button type="button" onClick={() => nav('/')} className="hidden rounded-2xl border border-white/70 bg-white/70 px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-rose-200 hover:text-rose-800 dark:border-white/10 dark:bg-white/10 dark:text-slate-200 dark:hover:border-indigo-400/30 sm:flex sm:items-center sm:gap-2">
                 <AdminIcon name="external" size={15} /> Website
               </button>
             </div>
